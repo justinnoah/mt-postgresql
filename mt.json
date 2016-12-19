@@ -1,7 +1,7 @@
 {
   "authors": ["Justin Noah <justinnoah@gmail.com>"],
-  "name": "postgres-mt",
-  "version": "0.0.1",
+  "name": "postgres",
+  "version": "0.1",
   "paths": [".", "./src"],
   "entrypoint": "./src/postgresql",
   "dependencies": {}
