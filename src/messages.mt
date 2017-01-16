@@ -1,5 +1,5 @@
-import "lib/enum" ~= [=> makeEnum :DeepFrozen]
-import "src/bytes" ~= [=> parseInt :DeepFrozen]
+import "lib/enum" =~ [=> makeEnum :DeepFrozen]
+import "src/bytes" =~ [=> parseInt :DeepFrozen]
 
 def authenticationHeader := b`R`
 def [
