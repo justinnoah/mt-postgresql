@@ -16,7 +16,7 @@ def parseInt(bytes :Bytes) :Int as DeepFrozen:
     return result
 
 
-def makeByteArray(burst :Int) :List[Int]:
+def makeByteArray(burst :Int) :List[Int] as DeepFrozen:
     "Encode response"
 
     var byteArray := [burst & 0xff];

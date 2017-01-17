@@ -3,7 +3,7 @@ import "src/bytes" =~ [=> parseInt :DeepFrozen]
 exports (makeParserPump)
 
 
-def authenticationHeader := b`R`
+def authenticationHeader :DeepFrozen := b`R`
 def [MsgState :DeepFrozen,
     BEGIN :DeepFrozen,
     OFF_RAILS :DeepFrozen
@@ -16,28 +16,28 @@ def [PSQLAuthMessage :DeepFrozen,
     AUTH_ERROR :DeepFrozen,
 ] := makeEnum(["AUTH_OK", "AUTH_CLEARTEXT", "AUTH_MD5", "AUTH_ERROR"])
 
-def authTypeMap := [
+def authTypeMap :DeepFrozen := [
     0 => AUTH_OK,
     3 => AUTH_CLEARTEXT,
     5 => AUTH_MD5
 ]
 
-def isHeader(byte :Bytes) :Bool:
+def isHeader(byte :Bytes) :Bool as DeepFrozen:
     if (byte == b`R`):
         return true
     return false
 
-def parseAuth(buf :Bytes) :Map[PSQLAuthMessage, Bytes]:
+def parseAuth(buf :Bytes) :Map[PSQLAuthMessage, Bytes] as DeepFrozen:
     def len := parseInt(buf.slice(0, 3))
     def authType := parseInt(buf.slice(3, 7))
 
-    if ((len != 8) && (parseInt(authType) == 8):
-        throw.eject(ej, ["Only ClearText and MD5 passwords are currently supported"])
+    if ((len != 8) && (parseInt(authType) == 8)):
+        throw("Only ClearText and MD5 passwords are currently supported")
     else if (len != 8):
-        throw.eject(ej, [len, "Incorrect Auth Length"])
+        throw("Incorrect Auth Length")
 
     var authMsg := []
-    if authTypeMap.getKeys().contains(authType):
+    if (authTypeMap.getKeys().contains(authType)):
         switch (authTypeMap[authType]):
             match ==AUTH_OK:
                 authMsg := [AUTH_OK => buf.slice(0, 7)]
@@ -54,12 +54,13 @@ def makeParserPump() as DeepFrozen:
     var buf :Bytes := b``
     var msgState := OFF_RAILS
     def end :Bytes := b`$\x00`
+
     def parse(ej) :Bool:
         switch(msgState):
             match ==BEGIN:
                 if (buf.startsWith(authenticationHeader)):
                     def authType := parseAuth(buf.slice(1, 12))
-                    switch (res[0]):
+                    switch (authType.getKeys()[0]):
                         match ==AUTH_ERROR:
                             msgState := OFF_RAILS
                             buf slice= (1)
