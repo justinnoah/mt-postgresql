@@ -2,12 +2,12 @@ import "unittest" =~ [=> unittest]
 exports (makeByteArray, parseInt)
 
 
-def parseInt(bytes :Bytes) :Int:
+def parseInt(bytes :Bytes) :Int as DeepFrozen:
     "Parse an Int from a Bytes argument"
 
     var result := 0
     def bLen := bytes.size()
-    def bits := bLen * 8
+    var bits := bLen * 8
 
     for idx in (0..bLen-1):
         bits -= 8

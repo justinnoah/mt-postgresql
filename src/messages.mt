@@ -1,15 +1,15 @@
 import "lib/enum" =~ [=> makeEnum :DeepFrozen]
 import "src/bytes" =~ [=> parseInt :DeepFrozen]
+exports (makeParserPump)
+
 
 def authenticationHeader := b`R`
-def [
-    MsgState :DeepFrozen,
+def [MsgState :DeepFrozen,
     BEGIN :DeepFrozen,
     OFF_RAILS :DeepFrozen
 ] := makeEnum(["BEGIN", "OFF_RAILS"])
 
-def [
-    PSQLAuthMessage :DeepFrozen,
+def [PSQLAuthMessage :DeepFrozen,
     AUTH_OK :DeepFrozen,
     AUTH_CLEARTEXT :DeepFrozen,
     AUTH_MD5 :DeepFrozen,
@@ -22,7 +22,7 @@ def authTypeMap := [
     5 => AUTH_MD5
 ]
 
-def isHeader(byte :Word) :Bool:
+def isHeader(byte :Bytes) :Bool:
     if (byte == b`R`):
         return true
     return false
@@ -31,7 +31,7 @@ def parseAuth(buf :Bytes) :Map[PSQLAuthMessage, Bytes]:
     def len := parseInt(buf.slice(0, 3))
     def authType := parseInt(buf.slice(3, 7))
 
-    if ((len != 8) && (parseInt(3, 7) == 8):
+    if ((len != 8) && (parseInt(authType) == 8):
         throw.eject(ej, ["Only ClearText and MD5 passwords are currently supported"])
     else if (len != 8):
         throw.eject(ej, [len, "Incorrect Auth Length"])
